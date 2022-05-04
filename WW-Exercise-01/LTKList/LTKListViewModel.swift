@@ -30,12 +30,18 @@ final class LTKListViewModel {
             self.fetchedLTKS.append(contentsOf: newLTKBase.ltks ?? [])
         }
         
-        let recievedLTKError = { [unowned self] (completion: Subscribers.Completion<APIFailure>) -> Void in
-            ltkEntitySubject.send(completion: completion)
+        let receivedLTKCompletion = { [unowned self] (completion: Subscribers.Completion<APIFailure>) -> Void in
+            switch completion {
+                case .finished:
+                    break
+                case .failure(let failure):
+                    ltkEntitySubject.send(completion: .failure(failure))
+            }
+            
         }
 
         store.readLTKLists()
-            .sink(receiveCompletion: recievedLTKError, receiveValue: recievedLTK)
+            .sink(receiveCompletion: receivedLTKCompletion, receiveValue: recievedLTK)
             .store(in: &disposeBag)
     }
 

@@ -113,9 +113,6 @@ extension LTKListViewController: UICollectionViewDataSourcePrefetching {
 
 extension LTKListViewController: Subscriber {
 
-    typealias Input = [LTK]
-    typealias Failure = APIFailure
-
     /// Subscriber is willing recieve unlimited values upon subscription
     func receive(subscription: Subscription) {
         subscription.request(.unlimited)
@@ -130,6 +127,35 @@ extension LTKListViewController: Subscriber {
 
     /// Print the completion event
     func receive(completion: Subscribers.Completion<APIFailure>) {
-        print("Received completion in VC", completion)
+        switch completion {
+            case .finished:
+                print("Received completion in VC", completion)
+            case .failure(let error):
+                presentAlert(with: error)
+        }
+        
+    }
+}
+
+protocol Localization {
+    associatedtype Key
+    func localizedString(_ key: Key) -> String
+}
+
+extension LTKListViewController: Localization {
+    func localizedString(_ key: LocalizationPropertiesKey) -> String {
+        return key.localizedString
+    }
+    enum LocalizationPropertiesKey {
+        case fieldLabel, defaultValue, isRequired, isReadOnly
+        
+        var localizedString: String {
+            switch self {
+                case .fieldLabel: return NSLocalizedString("Field Label", comment: "Label name of a field property.")
+                case .defaultValue: return NSLocalizedString("Default Value", comment: "Label name of a field property.")
+                case .isRequired: return NSLocalizedString("Required", comment: "Label name of a field property.")
+                case .isReadOnly: return NSLocalizedString("Read Only", comment: "Label name of a field property.")
+            }
+        }
     }
 }
