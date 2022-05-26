@@ -66,7 +66,7 @@ extension UIAlertController {
 }
 
 extension UIViewController {
-    func presentAlert(with error: APIFailure) {
+    func presentAlert(with error: Failure) {
         UIAlertController
             .Builder()
             .withTitle(NSLocalizedString("Error", comment: "Error title shown in modal"))

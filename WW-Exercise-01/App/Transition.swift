@@ -9,6 +9,6 @@ protocol TransitionDelegate: AnyObject {
 }
 
 enum Transition {
-    case showLTKList
-    case showDetailView
+    case showMainScreen
+    case showPokemonDetail
 }

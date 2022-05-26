@@ -4,8 +4,8 @@
 
 import Foundation
 
-enum APIFailure: Error {
+enum Failure: Error {
     case decodingError
-    case URLError
-    case captured(Error)
+    case urlConstructError
+    case APIError(Error)
 }

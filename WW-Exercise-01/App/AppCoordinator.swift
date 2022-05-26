@@ -1,33 +1,30 @@
 //
-//  AppCoordinator.swift
+//  AppRouter.swift
 //
 
 import UIKit
 
-final class AppCoordinator: Coordinator {
+final class AppRouter {
 
     let navigationViewController = UINavigationController()
 
-    private let apiManager = APIManager()
-
     func start() {
-        process(transition: .showLTKList, with: nil)
+        process(transition: .showMainScreen, with: nil)
     }
 
-    private var coordinatorRegister: [Transition: WorkFlowCoordinator] = [.showLTKList: LTKListCoordinator(),
-                                                                          .showDetailView: DetailViewCoordinator()]
+    private var coordinatorRegister: [Transition: Coordinator] = [.showMainScreen: PokemonListCoordinator(),
+                                                                  .showPokemonDetail: PokemonDetailCoordinator()]
 }
 
-extension AppCoordinator: TransitionDelegate {
+extension AppRouter: TransitionDelegate {
 
     func process(transition: Transition, with model: Any?) {
         print("Processing route: \(transition)")
 
         let coordinator = coordinatorRegister[transition]
-        coordinator?.inject(model: model)
-        coordinator?.inject(apiManager: apiManager)
         coordinator?.inject(transitionDelegate: self)
         coordinator?.inject(navigationController: navigationViewController)
+        coordinator?.inject(model: model)
         coordinator?.start()
     }
 }
